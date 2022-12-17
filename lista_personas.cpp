@@ -2,184 +2,12 @@
 #include<windows.h>
 #include<conio.h>
 #include<string>
+#include<fstream>
 #define reiniciarMenu cout<<"\n\t Da click para reiniciar el menu"; getch(); 
 using namespace std;
+#include "Lista.h"
 
-//Definción de la estructura Datos.
-struct Datos{ // Los atributos inicializados en cero o vacío.
-    string nombre;
-    int edad;
-    float peso;
-    double estatura;
-};
-
-struct Datos datos={"",0,0.0,0.0};
-
-//Definición de la clase Nodo.
-class Nodo{
-    private:
-        struct Datos persona;
-        Nodo *siguiente;
-    public:
-        Nodo(Nodo *siguiente); // Constructor
-        struct Datos regPersona();
-        Nodo* regSiguiente();
-        void modPersona(struct Datos _persona);       
-        void modSiguiente(Nodo *_siguiente);
-        void modNombrePersona(string _nombre);
-        void modEdadPersona(int _edad);
-        void modPesoPersona(float _peso);
-        void modEstaturaPersona(double _estatura);
-        string regNombrePersona();
-        int regEdadPersona();
-        float regPesoPersona();
-        double regEstaturaPersona();
-        void mostrarPersona();
-};
-
-// Constructor de la clase Nodo
-Nodo::Nodo(Nodo *_siguiente){
-    this->persona=datos;
-    this->siguiente=_siguiente;
-}
-
-// Modificador de persona de la clase Nodo
-void Nodo::modPersona(struct Datos _persona){
-    this->persona=_persona;
-}
-
-//Modificador de siguiente de la clase Nodo
-void Nodo::modSiguiente(Nodo *_siguiente){
-    this->siguiente=_siguiente;
-}
-
-//Retornador de persona de la clase Nodo
-struct Datos Nodo::regPersona(){
-    return this->persona;
-}
-
-//Retornador de siguiente de la clase Nodo
-Nodo* Nodo::regSiguiente(){
-    return this->siguiente;
-}
-
-//Modificador del nombre de persona de la clase Nodo
-void Nodo::modNombrePersona(string _nombre){
-    this->persona.nombre=_nombre;
-}
-
-//Modificador de la edad de persona de la clase Nodo
-void Nodo::modEdadPersona(int _edad){
-    this->persona.edad=_edad;
-}
-
-//Modificador de el peso de persona de la clase Nodo
-void Nodo::modPesoPersona(float _peso){
-    this->persona.peso=_peso;
-}
-
-//Modificador de la estatura de persona de la clase Nodo
-void Nodo::modEstaturaPersona(double _estatura){
-    this->persona.estatura=_estatura;
-}
-
-//Retornador del nombre de persona de la clase Nodo
-string Nodo::regNombrePersona(){
-    return this->persona.nombre;
-}
-
-//Retornador de la edad de persona de la clase Nodo
-int Nodo::regEdadPersona(){
-    return this->persona.edad;
-}
-
-//Retornador del peso de persona de la clase Nodo
-float Nodo::regPesoPersona(){
-    return this->persona.peso;
-}
-
-//Retornador de la estatura de persona de la clase Nodo
-double Nodo::regEstaturaPersona(){
-    return this->persona.estatura;
-}
-
-//Mostrador de todos los campos de persona(Datos) de la clase Nodo
-void Nodo::mostrarPersona(){
-    cout<<"\n\t +-----------------------------------+";
-    cout<<"\n\t | Nombre: "<<this->regNombrePersona();
-    cout<<"\n\t | Edad: "<<this->regEdadPersona();
-    cout<<"\n\t | Peso: "<<this->regPesoPersona();
-    cout<<"\n\t | Estatura: "<<this->regEstaturaPersona();
-    cout<<"\n\t +-----------------------------------+";
-}
-
-class Lista{
-    private:
-        Nodo* primero;
-    public:
-        Lista();
-        void insertarNodo(Nodo _nuevo);
-        void mostrarLista();
-        void buscarNodo(string _nombre);
-};
-
-Lista::Lista(){
-    this->primero=NULL;
-}
-
-void Lista::insertarNodo(Nodo _nuevo){
-    Nodo *nuevo_nodo = new Nodo(NULL);
-    nuevo_nodo->modPersona(_nuevo.regPersona());
-    Nodo *aux1 = this->primero;
-    Nodo *aux2;
-
-    while((aux1!=NULL)&&(aux1->regEdadPersona()<_nuevo.regEdadPersona())){
-        aux2=aux1;
-        aux1=aux1->regSiguiente();
-    }
-
-    if(this->primero==aux1){
-        this->primero = nuevo_nodo;
-    }else{
-        aux2->modSiguiente(nuevo_nodo);
-    }
-
-    nuevo_nodo->modSiguiente(aux1);
-    cout<<"\n\t La siguiente persona ha sido insertada correctamente: ";
-    nuevo_nodo->mostrarPersona();
-}
-
-void Lista::mostrarLista(){
-    if(this->primero==NULL){
-        cout<<"\n\t La lista esta vacia...";
-    }else{
-        Nodo* actual = new Nodo(NULL);
-        actual=this->primero;
-        while(actual!=NULL){
-            actual->mostrarPersona();
-            actual=actual->regSiguiente();
-        }
-    }
-}
-
-void Lista::buscarNodo(string _nombre){
-    Nodo* actual = new Nodo(NULL);
-    actual=this->primero;
-    bool encontrado=false;
-    while(actual!=NULL){
-        if(actual->regNombrePersona().compare(_nombre)==0){
-            cout<<"\n\t La persona ha sido encontrada en la lista.";
-            actual->mostrarPersona();
-            encontrado=true;
-            break;
-        }
-        actual=actual->regSiguiente();
-    }
-    if(encontrado==false){
-        cout<<"\n\t La persona de nombre "<<_nombre<<" no fue encontrada en la lista.";
-    }
-}
-
+void intro();
 void menu();
 
 //Instancia de Lista con alcance global
@@ -187,24 +15,31 @@ Lista lista_personas;
 
 int main(){
 
+    intro();
     menu();
 
     cout<<"\n\n";
     return 0;
 }
 
+void intro(){
+    system("title Sistema gestor de listas de personas");
+    Sleep(3000);
+    cout<<"\n\t Iniciando...";
+    Sleep(3000);
+    cout<<"\n\t Bienvenidos...";
+    Sleep(3000);
+}
 
 void menu(){
     
-    int opcion;
-    string nombre;
-    int edad;
+    int opcion,edad,opcion_orden;
+    string nombre,nombre_archivo;
     float peso;
     double estatura;
     Nodo aux(NULL);
 
     do{
-        system("title Gestor de personas");
         system("cls");
         cout<<"\n\t +-----------------------------------+";
         cout<<"\n\t | Bienvenido al gestor de personas  |";
@@ -251,19 +86,50 @@ void menu(){
             case 4:
                 cout<<"\n\t Escribe el nombre de la persona a modificar: ";
                 cin>>nombre;
+                lista_personas.modificarNodo(nombre);
                 reiniciarMenu
                 break;   
             case 5: 
-                
+                cout<<"\n\t Escribe el nombre de la persona a eliminar: ";
+                cin>>nombre;
+                lista_personas.eliminarNodo(nombre);
                 reiniciarMenu
                 break;   
-            case 6: break;   
+            case 6:
+                cout<<"\n\t +--------------------------+";
+                cout<<"\n\t | 1) Ordenar por nombre    |";
+                cout<<"\n\t | 2) Ordenar por edad      |";
+                cout<<"\n\t | 3) Ordenar por peso      |";
+                cout<<"\n\t | 4) Ordenar por estatura  |";
+                cout<<"\n\t +--------------------------+";
+                cout<<"\n\t Opcion de ordenamiento> ";
+                cin>>opcion_orden;
+                switch(opcion_orden){
+                    case 1: case 2: 
+                    case 3: case 4:
+                        // Por el momento sólo cuenta con ordenamiento por edad.
+                        cout<<"\n\t Ordenamiento por edades: ";
+                        lista_personas.mostrarLista();
+                        break;
+                    default:
+                        cout<<"\n\t La opcion de ordenamiento debe ser un numero entre 1 y 4.";
+                        break;    
+                }
+                reiniciarMenu
+                break;   
+            case 7: 
+                cout<<"\n\t Nombra del archivo (ejemplo.txt): ";
+                cin>>nombre_archivo;
+                lista_personas.guardarListaEnArchivo(nombre_archivo);
+                reiniciarMenu
+                break;   
+            case 8: break;   
             default:
-                cout<<"\n\t La opcion debe ser un numero entre 1 y 6.";
+                cout<<"\n\t La opcion debe ser un numero entre 1 y 8.";
                 reiniciarMenu
                 break;    
         }   
-    }while(opcion!=6);
+    }while(opcion!=8);
 
     cout<<"\n\t Fin del programa, vuelva pronto...";
     Sleep(3000);
